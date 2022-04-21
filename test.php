@@ -7,18 +7,11 @@
     <body>
     <?php
         
-    session_start();
-        
-	//establish connection info
+    //establish connection info
     $server = "localhost";// your server
     $userid = "upmro5wv5djmy"; // your user id
     $pw = "eb4a8d8urcyj"; // your pw
     $db= "dbdhodggsm9tll"; // your database
-        
-    //Get user's information
-    $_SESSION["id"] = $_POST["id"];
-	$_SESSION["name"] = $_POST["name"];
-	$_SESSION["email"] = $_POST["email"];
 		
     // Create connection
     $conn = new mysqli($server, $userid, $pw);
@@ -33,24 +26,17 @@
     $conn->select_db($db);
 
     //run a query --> check with Clea name of user variables 
-    $sql = "SELECT f_name, l_name, email FROM users WHERE email='".$_POST["email"]."'";
+    $sql = "SELECT * FROM users";
        
     //get results
-    $result = $conn->query($sql);
-    
-    //check if user has already existing google ID --> login and update google id
-    if(!empty($result->fetch_assoc())){
-		$sql2 = "UPDATE users SET google_id='".$_POST["id"]."' WHERE email='".$_POST["email"]."'";
-	}
-        
-    //add user to data base if they are not already in database 
-    else{
-		$sql2 = "INSERT INTO users (name, email, google_id) VALUES ('".$_POST["name"]."', '".$_POST["email"]."', '".$_POST["id"]."')";
-	}
-	$mysqli->query($sql2);
-    
-    //Checking it worked
-    echo "Updated Successful";
+    if ($result->num_rows > 0) {
+         while($row = $result->fetch_assoc()) {
+    	    echo $row["f_name"]. " " . $row["l_name"]. "<br>";
+         }
+     } else {
+         echo "no results";
+    }
+
 
     //close the connection	
     $conn->close();
